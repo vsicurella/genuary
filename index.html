@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genuary 2026 Sketches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+        .sketches-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .sketches-list a {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .sketches-list a:hover {
+            background: #0056b3;
+        }
+        .viewer {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 4px;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Genuary 2026 Sketches</h1>
+    
+    <div class="container">
+        <div class="sketches-list" id="sketchesList">
+            <p class="loading">Loading sketches...</p>
+        </div>
+        <div class="viewer">
+            <iframe id="sketchFrame" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <script>
+        async function loadLinks() {
+            try {
+                const response = await fetch('./links.txt');
+                const text = await response.text();
+                const lines = text.split('\n').filter(line => line.trim());
+                const listDiv = document.getElementById('sketchesList');
+                listDiv.innerHTML = '';
+
+                lines.forEach(line => {
+                    const [year, days] = line.split(':');
+                    if (!year || !days) return;
+                    
+                    const daysArray = days.split(',').map(day => day.trim()).filter(day => day);
+                    daysArray.forEach(day => {
+                        const link = document.createElement('a');
+                        link.textContent = `${year.trim()} - Day ${day}`;
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            loadSketch(`${year.trim()}/${day}.js`);
+                        };
+                        listDiv.appendChild(link);
+                    });
+                });
+            } catch (error) {
+                document.getElementById('sketchesList').innerHTML = 
+                    '<p class="loading">Error loading links</p>';
+            }
+        }
+
+        async function loadSketches() {
+            try {
+                // Links are now loaded from links.txt
+            } catch (error) {
+                document.getElementById('sketchesList').innerHTML = 
+                    '<p class="loading">Error loading sketches</p>';
+            }
+        }
+
+        function loadSketch(filename) {
+            const iframeContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"><\/script>
+                </head>
+                <body style="margin:0;overflow:hidden;">
+                    <script src="../${filename}"><\/script>
+                </body>
+                </html>
+            `;
+            
+            const iframe = document.getElementById('sketchFrame');
+            iframe.srcdoc = iframeContent;
+        }
+
+        loadLinks();
+        loadSketches();
+        loadSketch('2026/5.js')
+    </script>
+</body>
+</html>
