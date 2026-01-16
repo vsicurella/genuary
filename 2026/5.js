@@ -106,7 +106,8 @@ function setup() {
 }
 
 function draw() {
-    background(0,0,0,0.08);
+    colorMode('rgb')
+    background(0,0,0, 30);
 
     for (const ch in text) {
         for (const box of textRects[ch])  {
