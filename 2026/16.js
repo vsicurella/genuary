@@ -75,12 +75,11 @@ class Shape
         this.data.sort((a,b) => a.theta - b.theta);
     }
 
-    draw()
+    draw(weight=1, strokeColor=0, fillColor=null)
     {
-        strokeWeight(1)
-        stroke(0)
-        // fill(0,0,0,0)
-        fill(this.color)
+        strokeWeight(weight)
+        stroke(strokeColor)
+        fill(fillColor || this.color)
 
         beginShape()
         for (var p = 0; p <= this.data.length; p++)
@@ -242,6 +241,8 @@ function draw() {
         noises.push([x,y]);
     }
 
+    // Make a polygon from random points
+
     const MIN_POLY = 3;
     const MAX_POLY = 24;
     const polygon = Math.round(Math.random() * (MAX_POLY-MIN_POLY) + MIN_POLY);
@@ -257,7 +258,9 @@ function draw() {
     particle.setTarget({x: width/2, y: height/2}, 2);
 
     particles.push(particle)
+    shape.draw(1, color(255,0,0,48));
 
+    // Save it if it's a "good shape"
     const GOOD = 5/8;
     if (abs(shape.score() - GOOD) < 0.25)
     {
