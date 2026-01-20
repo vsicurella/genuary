@@ -19,7 +19,7 @@ class Shape
     age = 0;
 
     scalar = 1;
-    ageScalar = Math.pow(0.5,1/30);
+    ageScalar = Math.pow(0.5,1/45);
 
     empty = false
 
@@ -167,14 +167,14 @@ class Particle
 
         if (this.dx < 1e-3 && this.dy < 1e-3){
             this.stagnancy += 1;
-            console.log(this,this.stagnancy)
+            // console.log(this,this.stagnancy)
         }
 
         if (this.stagnancy > (0.01 / this.rate))
             this.empty = true
     }
 
-    setTarget(position) {
+    setTarget(position, accelScalar=0.25) {
         if (this.target.x != position.x || this.target.y != position.y) {
             this.target = {
                 x: position.x - this.x,
@@ -184,8 +184,8 @@ class Particle
             let sx = Math.sign(this.target.x)
             let sy = Math.sign(this.target.y)
 
-            this.mx = pow(abs(this.target.x), this.rate) * sx * 0.25;
-            this.my = pow(abs(this.target.y), this.rate) * sy * 0.25;
+            this.mx = pow(abs(this.target.x), this.rate) * sx * accelScalar;
+            this.my = pow(abs(this.target.y), this.rate) * sy * accelScalar;
         }
     }
 }
@@ -254,6 +254,8 @@ function draw() {
 
     const shape = new Shape(samples);
     const particle = new Particle(shape.center)
+    particle.setTarget({x: width/2, y: height/2}, 2);
+
     particles.push(particle)
 
     const GOOD = 5/8;
